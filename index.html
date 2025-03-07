@@ -1,0 +1,78 @@
+# classement<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classement 🏆</title>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>🏆 Classement des Joueurs 🏆</h1>
+        <ul id="leaderboard"></ul>
+        <button onclick="getLeaderboard()">🔄 Actualiser</button>
+    </div>
+
+    <script>
+        // 🔥 Configuration Firebase (REMPLACE AVEC TES INFOS)
+        const firebaseConfig = {
+            apiKey: "TA_CLE_API",
+            authDomain: "TON_PROJET.firebaseapp.com",
+            projectId: "TON_PROJET",
+            storageBucket: "TON_PROJET.appspot.com",
+            messagingSenderId: "XXX",
+            appId: "XXX"
+        };
+
+        // 🚀 Initialisation Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Fonction pour récupérer le classement
+        async function getLeaderboard() {
+            const leaderboardRef = db.collection("leaderboard").orderBy("score", "desc").limit(10);
+            const querySnapshot = await leaderboardRef.get();
+            
+            let leaderboard = [];
+            querySnapshot.forEach((doc) => {
+                leaderboard.push(doc.data());
+            });
+
+            displayLeaderboard(leaderboard);
+        }
+
+        // Fonction pour afficher le classement
+        function displayLeaderboard(data) {
+            const leaderboardElement = document.getElementById("leaderboard");
+            leaderboardElement.innerHTML = "";
+
+            const emojis = ["🥇", "🥈", "🥉", "🎮", "⚡", "🔥", "💥", "🚀", "🌟", "👑"];
+
+            data.forEach((player, index) => {
+                leaderboardElement.innerHTML += `
+                    <li>
+                        <span class="rank">${emojis[index] || "🎮"}</span>
+                        <span class="name">${player.username}</span>
+                        <span class="score">${player.score} pts</span>
+                    </li>
+                `;
+            });
+        }
+
+        // 📡 Écoute les commandes de PandaSuite
+        if (window.PandaBridge) {
+            PandaBridge.listen((message) => {
+                if (message.action === "getLeaderboard") {
+                    getLeaderboard();
+                }
+            });
+        }
+
+        // Charger le classement au démarrage
+        getLeaderboard();
+    </script>
+</body>
+</html>
