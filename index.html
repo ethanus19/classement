@@ -1,78 +1,149 @@
-# classement<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Classement 🏆</title>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <title>🏆 Classement 🎉</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 300px; /* Réduit de 0,75 cm de chaque côté */
+            padding: 20px;
+        }
+
+        h2 {
+            color: #4CAF50;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #e0e0e0;
+        }
+
+        td {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            transition: background-color 0.3s ease;
+        }
+
+        .emoji {
+            font-size: 1.5rem;
+        }
+
+        .position {
+            font-weight: bold;
+        }
+
+        .points {
+            color: #FF5722;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>🏆 Classement des Joueurs 🏆</h1>
-        <ul id="leaderboard"></ul>
-        <button onclick="getLeaderboard()">🔄 Actualiser</button>
+        <h2>🏆 Classement 🎉</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>Prénom</th>
+                    <th>Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="position">🥇</td>
+                    <td>Grace</td>
+                    <td class="points">150</td>
+                </tr>
+                <tr>
+                    <td class="position">🥈</td>
+                    <td>Eve</td>
+                    <td class="points">130</td>
+                </tr>
+                <tr>
+                    <td class="position">🥉</td>
+                    <td>Alice</td>
+                    <td class="points">120</td>
+                </tr>
+                <tr>
+                    <td class="position">4️⃣</td>
+                    <td>Jack</td>
+                    <td class="points">115</td>
+                </tr>
+                <tr>
+                    <td class="position">5️⃣</td>
+                    <td>Charlie</td>
+                    <td class="points">110</td>
+                </tr>
+                <tr>
+                    <td class="position">6️⃣</td>
+                    <td>Ivy</td>
+                    <td class="points">105</td>
+                </tr>
+                <tr>
+                    <td class="position">7️⃣</td>
+                    <td>Frank</td>
+                    <td class="points">100</td>
+                </tr>
+                <tr>
+                    <td class="position">8️⃣</td>
+                    <td>Bob</td>
+                    <td class="points">95</td>
+                </tr>
+                <tr>
+                    <td class="position">9️⃣</td>
+                    <td>Hannah</td>
+                    <td class="points">90</td>
+                </tr>
+                <tr>
+                    <td class="position">🔟</td>
+                    <td>David</td>
+                    <td class="points">80</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <script>
-        // 🔥 Configuration Firebase (REMPLACE AVEC TES INFOS)
-        const firebaseConfig = {
-            apiKey: "TA_CLE_API",
-            authDomain: "TON_PROJET.firebaseapp.com",
-            projectId: "TON_PROJET",
-            storageBucket: "TON_PROJET.appspot.com",
-            messagingSenderId: "XXX",
-            appId: "XXX"
-        };
-
-        // 🚀 Initialisation Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        // Fonction pour récupérer le classement
-        async function getLeaderboard() {
-            const leaderboardRef = db.collection("leaderboard").orderBy("score", "desc").limit(10);
-            const querySnapshot = await leaderboardRef.get();
-            
-            let leaderboard = [];
-            querySnapshot.forEach((doc) => {
-                leaderboard.push(doc.data());
-            });
-
-            displayLeaderboard(leaderboard);
-        }
-
-        // Fonction pour afficher le classement
-        function displayLeaderboard(data) {
-            const leaderboardElement = document.getElementById("leaderboard");
-            leaderboardElement.innerHTML = "";
-
-            const emojis = ["🥇", "🥈", "🥉", "🎮", "⚡", "🔥", "💥", "🚀", "🌟", "👑"];
-
-            data.forEach((player, index) => {
-                leaderboardElement.innerHTML += `
-                    <li>
-                        <span class="rank">${emojis[index] || "🎮"}</span>
-                        <span class="name">${player.username}</span>
-                        <span class="score">${player.score} pts</span>
-                    </li>
-                `;
-            });
-        }
-
-        // 📡 Écoute les commandes de PandaSuite
-        if (window.PandaBridge) {
-            PandaBridge.listen((message) => {
-                if (message.action === "getLeaderboard") {
-                    getLeaderboard();
-                }
-            });
-        }
-
-        // Charger le classement au démarrage
-        getLeaderboard();
-    </script>
 </body>
 </html>
